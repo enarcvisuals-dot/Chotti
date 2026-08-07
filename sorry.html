@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>for bhaddi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@500;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0509;
+    --bg-deep: #050305;
+    --candle: #ff5f96;
+    --candle-soft: #ffb0cf;
+    --cream: #fbeef2;
+    --ink: #3a1626;
+    --ink-soft: #6b3a4d;
+    --blush: #ff6fa0;
+    --blush-deep: #d43d75;
+    --muted: #bd8b9f;
+    --gold: #ff8fb3;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  html, body{
+    height:100%;
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  body{
+    font-family: 'Jost', sans-serif;
+    color: var(--cream);
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ambient candle glow, sits behind everything, follows through all scenes */
+  #glow{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(circle at 50% 62%, rgba(255,95,150,0.20) 0%, rgba(255,95,150,0.08) 22%, rgba(10,8,7,0) 55%),
+      radial-gradient(circle at 50% 40%, rgba(227,122,140,0.10) 0%, rgba(227,122,140,0) 45%);
+    animation: flicker 4.5s ease-in-out infinite;
+  }
+
+  @keyframes flicker{
+    0%, 100%{ opacity: 1; }
+    25%{ opacity: 0.85; }
+    45%{ opacity: 0.95; }
+    60%{ opacity: 0.8; }
+    80%{ opacity: 0.92; }
+  }
+
+  /* drifting embers */
+  .ember{
+    position: fixed;
+    bottom: -10px;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--candle-soft);
+    box-shadow: 0 0 6px 2px rgba(255,95,150,0.6);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+    animation: rise linear infinite;
+  }
+
+  @keyframes rise{
+    0%{ transform: translateY(0) translateX(0); opacity: 0; }
+    10%{ opacity: 0.7; }
+    90%{ opacity: 0.3; }
+    100%{ transform: translateY(-100vh) translateX(20px); opacity: 0; }
+  }
+
+  .heart-mote{
+    position: fixed;
+    bottom: -20px;
+    font-size: 12px;
+    color: var(--blush);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+    animation: rise-heart linear infinite;
+    text-shadow: 0 0 8px rgba(227,122,140,0.5);
+  }
+
+  @keyframes rise-heart{
+    0%{ transform: translateY(0) translateX(0) rotate(-6deg); opacity: 0; }
+    12%{ opacity: 0.55; }
+    88%{ opacity: 0.25; }
+    100%{ transform: translateY(-100vh) translateX(-16px) rotate(6deg); opacity: 0; }
+  }
+
+  #app{
+    position: relative;
+    z-index: 2;
+    height: 100vh;
+    height: 100dvh;
+    width: 100%;
+  }
+
+  .scene{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(14px);
+    pointer-events: none;
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .scene.active{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* ---------- SCENE 1 ---------- */
+
+  .eyebrow{
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+
+  h1.title{
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+    font-size: clamp(38px, 11vw, 58px);
+    color: var(--cream);
+    line-height: 1.15;
+    text-shadow: 0 0 24px rgba(255,95,150,0.25);
+    max-width: 320px;
+  }
+
+  .sub{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--muted);
+    margin-top: 14px;
+    max-width: 260px;
+  }
+
+  .btn{
+    margin-top: 44px;
+    padding: 15px 38px;
+    background: transparent;
+    border: 1px solid rgba(216,166,98,0.55);
+    color: var(--candle-soft);
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.35s ease;
+    box-shadow: 0 0 0 rgba(255,95,150,0);
+  }
+
+  .btn:hover, .btn:active{
+    background: rgba(255,95,150,0.12);
+    box-shadow: 0 0 24px rgba(255,95,150,0.3);
+    transform: translateY(-1px);
+  }
+
+  /* ---------- SCENE 2 : letter ---------- */
+
+  .letter{
+    background: var(--cream);
+    color: var(--ink);
+    width: min(400px, 100%);
+    max-height: 72vh;
+    padding: 38px 30px 30px;
+    border-radius: 3px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.4) inset,
+      0 20px 50px rgba(0,0,0,0.55),
+      0 0 60px rgba(255,95,150,0.12);
+    position: relative;
+    overflow-y: auto;
+    text-align: left;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .letter::before{
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 5px;
+    background: linear-gradient(90deg, var(--blush-deep), var(--gold));
+  }
+
+  .letter-heading{
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 34px;
+    color: var(--blush-deep);
+    margin-bottom: 14px;
+  }
+
+  .letter p{
+    font-size: 18px;
+    line-height: 1.65;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+
+  .letter .sign{
+    font-family: 'Caveat', cursive;
+    font-size: 26px;
+    color: var(--blush-deep);
+    margin-top: 18px;
+  }
+
+  .scene2 .btn{
+    color: var(--candle-soft);
+  }
+
+  /* ---------- SCENE 3 : gift box ---------- */
+
+  h2.box-heading{
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+    font-size: clamp(30px, 8vw, 40px);
+    margin-bottom: 6px;
+    color: var(--cream);
+  }
+
+  .box-hint{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 30px;
+  }
+
+  .bubble{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--cream);
+    background: rgba(227,169,160,0.12);
+    border: 1px solid rgba(227,169,160,0.35);
+    padding: 12px 20px;
+    border-radius: 14px;
+    max-width: 280px;
+    min-height: 26px;
+    margin-bottom: 26px;
+    opacity: 0;
+    transform: translateY(6px) scale(0.97);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .bubble.show{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .box-stage{
+    position: relative;
+    width: 200px;
+    height: 190px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .box-body{
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    right: 10px;
+    height: 108px;
+    background: linear-gradient(160deg, var(--blush) 0%, var(--blush-deep) 100%);
+    border-radius: 4px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+  }
+
+  .box-ribbon-v{
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 18px;
+    margin-left: -9px;
+    background: linear-gradient(90deg, #f0c98a, var(--gold) 50%, #f0c98a);
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    transform-origin: bottom center;
+  }
+
+  .box-lid{
+    position: absolute;
+    bottom: 92px;
+    left: 0;
+    right: 0;
+    height: 34px;
+    background: linear-gradient(160deg, #eab8ae, var(--blush-deep));
+    border-radius: 4px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+    transform-origin: 20% 100%;
+    transition: transform 0.6s cubic-bezier(.34,1.56,.64,1), box-shadow 0.5s ease;
+    z-index: 3;
+  }
+
+  .box-lid .box-ribbon-v{ top: 0; bottom: 0; }
+
+  .bow{
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 54px;
+    height: 30px;
+    z-index: 4;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .bow::before, .bow::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    background: var(--gold);
+    border-radius: 50% 50% 50% 4px;
+  }
+
+  .bow::before{ left: 0; transform: rotate(-20deg); }
+  .bow::after{ right: 0; transform: rotate(20deg) scaleX(-1); border-radius: 50% 50% 50% 4px; }
+
+  .bow-knot{
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: #e0b165;
+    border-radius: 50%;
+    z-index: 5;
+  }
+
+  /* tap states */
+  .box-stage.opened-1 .box-lid{ transform: rotate(-18deg) translateY(-4px); box-shadow: -10px 10px 20px rgba(0,0,0,0.4); }
+  .box-stage.opened-1 .box-body{ box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 30px rgba(255,95,150,0.18); }
+  .box-stage.opened-1 .bow{ transform: translateX(-50%) scale(0.9) translateY(-3px); }
+
+  .box-stage.opened-2 .box-lid{ transform: rotate(-42deg) translateY(-10px); }
+  .box-stage.opened-2 .bow{ opacity: 0.5; transform: translateX(-50%) scale(0.75) translateY(-6px) rotate(-8deg); }
+  .box-stage.opened-2 .box-ribbon-v{ transform: scaleY(0.6); opacity: 0.6; }
+
+  .box-stage.opened-3 .box-lid{ transform: rotate(-72deg) translateY(-18px); box-shadow: -18px 14px 26px rgba(0,0,0,0.45); }
+  .box-stage.opened-3 .bow{ opacity: 0; transform: translateX(-50%) scale(0.5) translateY(-14px); }
+  .box-stage.opened-3 .box-body{ box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 46px rgba(255,95,150,0.32); }
+  .box-stage.opened-3 .box-ribbon-v{ opacity: 0.25; }
+
+  .box-glow{
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 40px;
+    background: radial-gradient(ellipse at center, rgba(255,176,207,0.5), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .box-stage.opened-2 .box-glow, .box-stage.opened-3 .box-glow{ opacity: 1; }
+
+  .final-note{
+    margin-top: 30px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 280px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .final-note.show{ opacity: 1; transform: translateY(0); }
+
+  .final-note .heart{ color: var(--blush); font-size: 20px; }
+
+  /* sparkle particles on tap */
+  .spark{
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--candle-soft);
+    box-shadow: 0 0 8px 2px rgba(255,95,150,0.7);
+    pointer-events: none;
+    z-index: 5;
+    animation: spark-burst 0.9s ease-out forwards;
+  }
+
+  @keyframes spark-burst{
+    0%{ opacity: 1; transform: translate(0,0) scale(1); }
+    100%{ opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.3); }
+  }
+
+  /* ---------- SCENE 3 continue button ---------- */
+
+  .continue-btn{
+    margin-top: 30px;
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .continue-btn.show{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* ---------- SCENE 4 : choices ---------- */
+
+  .choice-heading{
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+    font-size: clamp(30px, 8vw, 40px);
+    margin-bottom: 8px;
+    color: var(--cream);
+  }
+
+  .choice-sub{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+
+  .choices{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: min(300px, 100%);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .choices.hide{
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+    pointer-events: none;
+    position: absolute;
+  }
+
+  .choice-btn{
+    padding: 15px 22px;
+    background: rgba(244,234,216,0.04);
+    border: 1px solid rgba(216,166,98,0.35);
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .choice-btn:hover, .choice-btn:active{
+    background: rgba(227,122,140,0.12);
+    border-color: rgba(227,122,140,0.5);
+    transform: translateY(-2px);
+  }
+
+  .response{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .response.show{
+    display: flex;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .response-icon{
+    font-size: 44px;
+    margin-bottom: 16px;
+  }
+
+  .response-text{
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+    font-size: 28px;
+    color: var(--cream);
+    max-width: 280px;
+  }
+
+  .response-sub{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 15px;
+    margin-top: 10px;
+    max-width: 260px;
+  }
+
+  .redo-btn{
+    margin-top: 26px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    cursor: pointer;
+    opacity: 0.7;
+  }
+
+  .redo-btn:hover{ opacity: 1; }
+
+  .wait-hint{
+    margin-top: 18px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  .wait-hint.show{ opacity: 0.8; }
+
+  /* happy: firecracker confetti */
+  .confetti{
+    position: fixed;
+    top: -10px;
+    width: 7px;
+    height: 12px;
+    z-index: 6;
+    pointer-events: none;
+    animation: confetti-fall linear forwards;
+  }
+
+  @keyframes confetti-fall{
+    0%{ transform: translateY(0) rotate(0deg); opacity: 1; }
+    100%{ transform: translateY(105vh) rotate(540deg); opacity: 0.9; }
+  }
+
+  #scene4.mood-happy #glow-overlay{
+    background: radial-gradient(circle at 50% 45%, rgba(255,95,150,0.28), transparent 60%);
+  }
+
+  /* sad: rain */
+  .rain-drop{
+    position: fixed;
+    top: -30px;
+    width: 1px;
+    height: 46px;
+    background: linear-gradient(180deg, rgba(168,192,214,0), rgba(168,192,214,0.45));
+    z-index: 1;
+    pointer-events: none;
+    animation: rain-fall linear forwards;
+  }
+
+  @keyframes rain-fall{
+    0%{ transform: translateY(0); opacity: 0.8; }
+    100%{ transform: translateY(110vh); opacity: 0.2; }
+  }
+
+  .mood-dim{
+    animation: dim-in 1s ease forwards;
+  }
+
+  @keyframes dim-in{
+    0%{ filter: brightness(1); }
+    100%{ filter: brightness(0.82) saturate(0.85); }
+  }
+
+  /* cry: falling tears */
+  .tear{
+    position: fixed;
+    top: -20px;
+    font-size: 16px;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.8;
+    animation: tear-fall linear forwards;
+  }
+
+  @keyframes tear-fall{
+    0%{ transform: translateY(0); opacity: 0.9; }
+    100%{ transform: translateY(100vh); opacity: 0; }
+  }
+
+  /* ---------- SCENE 5 : final check-in ---------- */
+
+  .final-heading{
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+    font-size: clamp(32px, 9vw, 44px);
+    margin-bottom: 34px;
+    color: var(--cream);
+  }
+
+  .final-choices{
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .final-choices.hide{
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+    pointer-events: none;
+    position: absolute;
+  }
+
+  .final-btn{
+    padding: 15px 30px;
+    background: rgba(251,238,242,0.04);
+    border: 1px solid rgba(255,111,160,0.4);
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .final-btn:hover, .final-btn:active{
+    background: rgba(255,111,160,0.15);
+    border-color: rgba(255,111,160,0.65);
+    transform: translateY(-2px);
+  }
+
+  .final-response{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .final-response.show{
+    display: flex;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .final-response-text{
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: clamp(34px, 10vw, 48px);
+    color: var(--blush);
+  }
+
+  .final-response-sub{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--cream);
+    font-size: 18px;
+    margin-top: 12px;
+    max-width: 280px;
+  }
+
+  .flying-heart{
+    position: fixed;
+    bottom: -30px;
+    font-size: 20px;
+    color: var(--blush);
+    z-index: 6;
+    pointer-events: none;
+    text-shadow: 0 0 10px rgba(255,111,160,0.6);
+    animation: heart-rise ease-out forwards;
+  }
+
+  @keyframes heart-rise{
+    0%{ transform: translateY(0) scale(0.8); opacity: 1; }
+    80%{ opacity: 1; }
+    100%{ transform: translateY(-100vh) scale(1.1); opacity: 0; }
+  }
+
+  @media (max-width: 360px){
+    .letter{ padding: 30px 22px 24px; }
+    .box-stage{ width: 170px; height: 170px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    #glow, .flame, .ember, .heart-mote, .confetti, .rain-drop, .tear{ animation: none !important; display: none !important; }
+    .scene, .box-lid, .bow, .bubble, .final-note, .choices, .response, .continue-btn{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="glow"></div>
+
+<div id="app">
+
+  <!-- SCENE 1 -->
+  <section class="scene active" id="scene1">
+    <p class="eyebrow">for my little Archuuuuu</p>
+    <h1 class="title">bhaddi has<br>something for you</h1>
+    <p class="sub">sit somewhere quiet for a second.</p>
+    <button class="btn" id="goBtn">go for it</button>
+  </section>
+
+  <!-- SCENE 2 -->
+  <section class="scene scene2" id="scene2">
+    <div class="letter">
+      <div class="letter-heading">I'm sorry.</div>
+      <p>Hi archuuuu, i know you will be wondering that again this website stuff but i only have this option to show apology my love.
+            so now on the main thing i want to say that last night i did not say i love you just because you lke it i said it because i always like to say it to ou cause i reallly reallyyyyy love ou my bachuuu.
+
+            and this is also not because you like it it is also because i wanted you to wake up smiling and i like to make this things for you archuuu.
+
+            So if possible forgive me my loveee and i promise you i will never say love you without feeling okay and yeah this missunderstandings happen and it will happen in the future as well but as this time i'll always find way to say sorry and get you back my lovee.
+
+            So i hope you have forgave me and we are good again right, so so so sorryyyy for hurting you my bachhu.
+
+            so now go for the next pages okk there is some more surprice for you
+      </p>
+      <div class="sign">— yours, always a little clumsy, always sorry when I am</div>
+    </div>
+    <button class="btn" id="nextBtn" style="margin-top:26px;">next</button>
+  </section>
+
+  <!-- SCENE 3 -->
+  <section class="scene" id="scene3">
+    <h2 class="box-heading">open this apology box</h2>
+    <p class="box-hint" id="boxHint">tap it. keep tapping.</p>
+
+    <div class="bubble" id="bubble"></div>
+
+    <div class="box-stage" id="box">
+      <div class="box-glow"></div>
+      <div class="bow">
+        <div class="bow-knot"></div>
+      </div>
+      <div class="box-lid">
+        <div class="box-ribbon-v"></div>
+      </div>
+      <div class="box-body">
+        <div class="box-ribbon-v"></div>
+      </div>
+    </div>
+
+    <p class="final-note" id="finalNote">that's everything in the box <span class="heart">♡</span><br>the rest, I owe you in person.</p>
+
+    <button class="btn continue-btn" id="continueBtn">one more thing</button>
+  </section>
+
+  <!-- SCENE 4 : choices -->
+  <section class="scene" id="scene4">
+    <div id="glow-overlay"></div>
+    <h2 class="choice-heading">so... where do we stand?</h2>
+    <p class="choice-sub">be honest with your little bhaddi.</p>
+
+    <div class="choices" id="choices">
+      <button class="choice-btn" data-choice="forgive">forgive me</button>
+      <button class="choice-btn" data-choice="angry">still angry</button>
+      <button class="choice-btn" data-choice="cry">make your little bhaddi cry 😭😭</button>
+    </div>
+
+    <div class="response" id="response-forgive">
+      <div class="response-icon">🎉</div>
+      <div class="response-text">yayy, thank you 🤍</div>
+      <p class="response-sub">okay okay, i loveeee youuuuuu sooooo soooo muchhhhh archuuuuuu.</p>
+      <button class="redo-btn" data-reset>choose again</button>
+    </div>
+
+    <div class="response" id="response-angry">
+      <div class="response-icon">🕊️</div>
+      <div class="response-text">i'll try till i succeed.</div>
+      <p class="response-sub">take your time. I'm not going anywhere.</p>
+      <button class="redo-btn" data-reset>choose again</button>
+    </div>
+
+    <div class="response" id="response-cry">
+      <div class="response-icon">😭</div>
+      <div class="response-text">you are making him cry...</div>
+      <p class="response-sub">okay okay, I deserved that. still sorry though.</p>
+      <button class="redo-btn" data-reset>choose again</button>
+    </div>
+
+    <p class="wait-hint" id="waitHint">wait 5-6 seconds for the next page...</p>
+
+  </section>
+
+  <!-- SCENE 5 : final check-in -->
+  <section class="scene" id="scene5">
+    <h2 class="final-heading">so.... are we okay now?</h2>
+
+    <div class="final-choices" id="finalChoices">
+      <button class="final-btn" id="finalYesBtn">yess <span class="heart">🤍</span></button>
+      <button class="final-btn" id="finalTimeBtn">i need time</button>
+    </div>
+
+    <div class="final-response" id="finalYesResponse">
+      <div class="final-response-text">yaayyyyyy 🤍</div>
+      <p class="final-response-sub">now come to me bachhuuuu.</p>
+    </div>
+
+    <div class="final-response" id="finalTimeResponse">
+      <div class="final-response-text">okay, love.</div>
+      <p class="final-response-sub">yeah i deserve that, but i'll wait for you loveee.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ambient embers + hearts
+  const emberCount = 8;
+  for(let i=0;i<emberCount;i++){
+    const e = document.createElement('div');
+    e.className = 'ember';
+    e.style.left = (Math.random()*100) + 'vw';
+    e.style.animationDuration = (6 + Math.random()*6) + 's';
+    e.style.animationDelay = (Math.random()*8) + 's';
+    document.body.appendChild(e);
+  }
+
+  const heartCount = 7;
+  for(let i=0;i<heartCount;i++){
+    const h = document.createElement('div');
+    h.className = 'heart-mote';
+    h.textContent = '♥';
+    h.style.left = (Math.random()*100) + 'vw';
+    h.style.animationDuration = (7 + Math.random()*6) + 's';
+    h.style.animationDelay = (Math.random()*10) + 's';
+    document.body.appendChild(h);
+  }
+
+  const scenes = {
+    1: document.getElementById('scene1'),
+    2: document.getElementById('scene2'),
+    3: document.getElementById('scene3'),
+    4: document.getElementById('scene4'),
+    5: document.getElementById('scene5'),
+  };
+
+  function goTo(n){
+    Object.values(scenes).forEach(s => s.classList.remove('active'));
+    scenes[n].classList.add('active');
+  }
+
+  document.getElementById('goBtn').addEventListener('click', () => goTo(2));
+  document.getElementById('nextBtn').addEventListener('click', () => goTo(3));
+
+  // gift box logic
+  const box = document.getElementById('box');
+  const bubble = document.getElementById('bubble');
+  const boxHint = document.getElementById('boxHint');
+  const finalNote = document.getElementById('finalNote');
+
+  const messages = [
+    "you get a hug for the mistake i made 🤍",
+    "you'll get a soft toy for this, once I'm there 🧸",
+    "and yes... you deserve some ice-cream too 🍦"
+  ];
+
+  let taps = 0;
+
+  function burstSparks(){
+    const rect = box.getBoundingClientRect();
+    for(let i=0;i<10;i++){
+      const s = document.createElement('div');
+      s.className = 'spark';
+      const angle = Math.random()*Math.PI*2;
+      const dist = 30 + Math.random()*40;
+      s.style.setProperty('--dx', Math.cos(angle)*dist + 'px');
+      s.style.setProperty('--dy', Math.sin(angle)*dist + 'px');
+      s.style.left = (rect.left + rect.width/2) + 'px';
+      s.style.top = (rect.top + 40) + 'px';
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 950);
+    }
+  }
+
+  box.addEventListener('click', () => {
+    if(taps >= 3) return;
+    taps++;
+    box.classList.add('opened-' + taps);
+    burstSparks();
+
+    bubble.classList.remove('show');
+    setTimeout(() => {
+      bubble.textContent = messages[taps - 1];
+      bubble.classList.add('show');
+    }, 220);
+
+    if(taps === 1){
+      boxHint.textContent = 'one more tap...';
+    } else if(taps === 2){
+      boxHint.textContent = 'go on, once more.';
+    } else if(taps === 3){
+      boxHint.textContent = 'that\'s all of it.';
+      setTimeout(() => finalNote.classList.add('show'), 1200);
+      setTimeout(() => document.getElementById('continueBtn').classList.add('show'), 1900);
+    }
+  });
+
+  // scene 3 -> scene 4
+  document.getElementById('continueBtn').addEventListener('click', () => goTo(4));
+
+  // scene 4: choices
+  const choicesEl = document.getElementById('choices');
+  const scene4 = document.getElementById('scene4');
+  const choiceButtons = document.querySelectorAll('.choice-btn');
+  const resetButtons = document.querySelectorAll('[data-reset]');
+
+  function launchConfetti(){
+    const colors = ['#f0a860', '#e3a9a0', '#f4ead8', '#d8a662', '#ffd9a0'];
+    for(let i=0;i<46;i++){
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = (Math.random()*100) + 'vw';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.animationDuration = (1.6 + Math.random()*1.4) + 's';
+      c.style.animationDelay = (Math.random()*0.4) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 3400);
+    }
+  }
+
+  function launchRain(){
+    const dropCount = 40;
+    const interval = setInterval(() => {
+      const r = document.createElement('div');
+      r.className = 'rain-drop';
+      r.style.left = (Math.random()*100) + 'vw';
+      r.style.animationDuration = (0.8 + Math.random()*0.5) + 's';
+      document.body.appendChild(r);
+      setTimeout(() => r.remove(), 1400);
+    }, 90);
+    setTimeout(() => clearInterval(interval), 3200);
+  }
+
+  function launchTears(){
+    const interval = setInterval(() => {
+      const t = document.createElement('div');
+      t.className = 'tear';
+      t.textContent = '💧';
+      t.style.left = (Math.random()*100) + 'vw';
+      t.style.animationDuration = (2 + Math.random()*1) + 's';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3200);
+    }, 220);
+    setTimeout(() => clearInterval(interval), 3000);
+  }
+
+  function showResponse(choice){
+    choicesEl.classList.add('hide');
+    scene4.classList.remove('mood-happy', 'mood-dim');
+    document.getElementById('response-forgive').classList.remove('show');
+    document.getElementById('response-angry').classList.remove('show');
+    document.getElementById('response-cry').classList.remove('show');
+
+    setTimeout(() => {
+      document.getElementById('response-' + choice).classList.add('show');
+    }, 300);
+
+    if(choice === 'forgive'){
+      scene4.classList.add('mood-happy');
+      launchConfetti();
+    } else if(choice === 'angry'){
+      scene4.classList.add('mood-dim');
+      launchRain();
+    } else if(choice === 'cry'){
+      scene4.classList.add('mood-dim');
+      launchTears();
+    }
+
+    clearTimeout(advanceTimer);
+    advanceTimer = setTimeout(() => goTo(5), 6000);
+
+    document.getElementById('waitHint').classList.add('show');
+  }
+
+  let advanceTimer = null;
+
+  choiceButtons.forEach(btn => {
+    btn.addEventListener('click', () => showResponse(btn.dataset.choice));
+  });
+
+  resetButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      clearTimeout(advanceTimer);
+      document.getElementById('response-forgive').classList.remove('show');
+      document.getElementById('response-angry').classList.remove('show');
+      document.getElementById('response-cry').classList.remove('show');
+      scene4.classList.remove('mood-happy', 'mood-dim');
+      choicesEl.classList.remove('hide');
+      document.getElementById('waitHint').classList.remove('show');
+    });
+  });
+
+  // scene 5: final check-in
+  const finalChoices = document.getElementById('finalChoices');
+  const finalYesResponse = document.getElementById('finalYesResponse');
+  const finalTimeResponse = document.getElementById('finalTimeResponse');
+
+  function launchHearts(){
+    const hearts = ['🤍', '💗', '💕'];
+    for(let i=0;i<26;i++){
+      const h = document.createElement('div');
+      h.className = 'flying-heart';
+      h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+      h.style.left = (Math.random()*100) + 'vw';
+      h.style.animationDuration = (2 + Math.random()*1.6) + 's';
+      h.style.animationDelay = (Math.random()*0.6) + 's';
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 4200);
+    }
+  }
+
+  document.getElementById('finalYesBtn').addEventListener('click', () => {
+    finalChoices.classList.add('hide');
+    setTimeout(() => finalYesResponse.classList.add('show'), 300);
+    launchHearts();
+  });
+
+  document.getElementById('finalTimeBtn').addEventListener('click', () => {
+    finalChoices.classList.add('hide');
+    setTimeout(() => finalTimeResponse.classList.add('show'), 300);
+  });
+</script>
+
+</body>
+</html>
